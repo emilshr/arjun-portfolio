@@ -1,0 +1,14 @@
+---
+import Clock from '../icons/Clock.astro';
+
+type Props = { minutes: string };
+
+const { minutes } = Astro.props;
+---
+
+<span class="flex gap-x-2 items-center">
+    <span>
+        {minutes}
+    </span>
+    <Clock />
+</span>

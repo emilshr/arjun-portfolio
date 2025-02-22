@@ -85,7 +85,7 @@ const { Content, remarkPluginFrontmatter, headings } = await render(post);
         </div>
         <div class="hidden sm:block fixed top-1/4 right-6">
             <p class="text-end pb-4">Index</p>
-            <ul class="flex flex-col gap-y-2 items-end text-right text-gray-400 text-xs">
+            <ul class="flex flex-col gap-y-2 items-end text-right text-gray-400 text-xs list-none">
                 {
                     headings
                         .filter(({ depth }) => depth > 1)

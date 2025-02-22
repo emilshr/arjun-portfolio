@@ -9,7 +9,6 @@ type Props = { post: CollectionEntry<'blog'>; class?: string; headingLevel?: 'h2
 const { post, class: className, headingLevel = 'h2' } = Astro.props;
 const { title, publishDate, updatedDate, excerpt } = post.data;
 const { metadata } = post.rendered || {};
-console.log({ metadata });
 const TitleTag = headingLevel;
 ---
 

@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Subscribe from '../../components/Subscribe.astro';
+---
+
+<BaseLayout>
+    <article class="mb-16 sm:mb-24"></article>
+
+    <!-- <Subscribe class="my-16 sm:my-24" /> -->
+</BaseLayout>
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        const copyUrlButton = document.querySelector('.copy-url-button') as HTMLButtonElement;
+        copyUrlButton?.addEventListener('click', async () => {
+            await copyUrl(copyUrlButton);
+        });
+
+        async function copyUrl(button: HTMLButtonElement) {
+            let url = button.getAttribute('data-url') || '';
+            let label = button.innerText;
+
+            await navigator.clipboard.writeText(url);
+
+            button.innerText = 'Copied';
+
+            setTimeout(() => {
+                button.innerText = label;
+            }, 2500);
+        }
+    });
+</script>

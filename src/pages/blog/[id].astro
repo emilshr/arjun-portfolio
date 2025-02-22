@@ -31,76 +31,69 @@ const { title, publishDate, updatedDate, excerpt, tags = [], seo } = post.data;
 const { Content, remarkPluginFrontmatter, headings } = await render(post);
 ---
 
-<BaseLayout title={seo?.title ?? title} description={seo?.description ?? excerpt} image={seo?.image} pageType="article" showHeader={false} isCrunched={false}>
-    <div class="grid grid-cols-5">
-        <div class="hidden sm:block"></div>
-        <div class="col-span-5 col-start-1 sm:col-start-2 max-w-4xl justify-center sm:col-span-3">
-            <article class="mb-16 sm:mb-24">
-                <header class="mb-8">
-                    <h1 class="text-3xl leading-tight font-serif font-medium sm:text-5xl sm:leading-tight">{title}</h1>
-                    <div class="mt-4 text-sm flex gap-x-6">
-                        <FormattedDate date={publishDate} />
-                        {
-                            updatedDate && (
-                                <>
-                                    <span>
-                                        (Updated on <FormattedDate date={updatedDate} />)
-                                    </span>
-                                </>
-                            )
-                        }
-                        {remarkPluginFrontmatter.minutesRead && <BlogReadingTime minutes={remarkPluginFrontmatter.minutesRead} />}
-                    </div>
-                </header>
-                <div class="max-w-none prose prose-dante sm:prose-lg text-justify">
-                    <Content />
-                </div>
-                <div class="mt-8 flex flex-wrap items-center gap-6 text-sm justify-between sm:mt-12 sm:text-base">
-                    {
-                        tags.length > 0 && (
-                            <div class="flex flex-wrap gap-x-5 gap-y-1 text-sm">
-                                {tags.map((tag) => (
-                                    <a class="text-main hover:underline" href={`/tags/${slugify(tag)}`}>
-                                        #{tag}
-                                    </a>
-                                ))}
-                            </div>
-                        )
-                    }
-                    <Button class="copy-url-button" aria-label="Copy link" data-url={href} data-tooltip-default="Copy link" data-tooltip-success="Copied"
-                        >Share</Button
-                    >
-                </div>
-            </article>
+<BaseLayout title={seo?.title ?? title} description={seo?.description ?? excerpt} image={seo?.image} pageType="article" showHeader={false}>
+    <article class="mb-16 sm:mb-24">
+        <header class="mb-8">
+            <h1 class="text-3xl leading-tight font-serif font-medium sm:text-5xl sm:leading-tight">{title}</h1>
+            <div class="mt-4 text-sm flex gap-x-6">
+                <FormattedDate date={publishDate} />
+                {
+                    updatedDate && (
+                        <>
+                            <span>
+                                (Updated on <FormattedDate date={updatedDate} />)
+                            </span>
+                        </>
+                    )
+                }
+                {remarkPluginFrontmatter.minutesRead && <BlogReadingTime minutes={remarkPluginFrontmatter.minutesRead} />}
+            </div>
+        </header>
+        <div class="max-w-none prose prose-dante sm:prose-lg text-justify">
+            <Content />
+        </div>
+        <div class="mt-8 flex flex-wrap items-center gap-6 text-sm justify-between sm:mt-12 sm:text-base">
             {
-                (prevPost || nextPost) && (
-                    <div class="my-16 sm:my-24">
-                        <h2 class="mb-12 text-xl font-serif italic sm:mb-16 sm:text-2xl">Read Next</h2>
-                        {nextPost && <PostPreview post={nextPost} class="mb-10 sm:mb-12" headingLevel="h3" />}
-                        {prevPost && <PostPreview post={prevPost} class="mb-10 sm:mb-12" headingLevel="h3" />}
+                tags.length > 0 && (
+                    <div class="flex flex-wrap gap-x-5 gap-y-1 text-sm">
+                        {tags.map((tag) => (
+                            <a class="text-main hover:underline" href={`/tags/${slugify(tag)}`}>
+                                #{tag}
+                            </a>
+                        ))}
                     </div>
                 )
             }
-            <Subscribe class="my-16 sm:my-24" />
+            <Button class="copy-url-button" aria-label="Copy link" data-url={href} data-tooltip-default="Copy link" data-tooltip-success="Copied">Share</Button>
         </div>
-        <div class="hidden sm:block fixed top-1/4 right-6">
-            <p class="text-end pb-4">Index</p>
-            <ul class="flex flex-col gap-y-2 items-end text-right text-gray-400 text-xs list-none">
-                {
-                    headings
-                        .filter(({ depth }) => depth > 1)
-                        .map(({ slug, text }) => {
-                            return (
-                                <li>
-                                    <NavLink class="hover:underline" href={`${href}#${slug}`}>
-                                        {text}
-                                    </NavLink>
-                                </li>
-                            );
-                        })
-                }
-            </ul>
-        </div>
+        {
+            (prevPost || nextPost) && (
+                <div class="my-16 sm:my-24">
+                    <h2 class="mb-12 text-xl font-serif italic sm:mb-16 sm:text-2xl">Read Next</h2>
+                    {nextPost && <PostPreview post={nextPost} class="mb-10 sm:mb-12" headingLevel="h3" />}
+                    {prevPost && <PostPreview post={prevPost} class="mb-10 sm:mb-12" headingLevel="h3" />}
+                </div>
+            )
+        }
+        <Subscribe class="my-16 sm:my-24" />
+    </article>
+    <div class="hidden sm:block fixed top-1/4 right-6" slot="sidebar">
+        <p class="text-end pb-4">Index</p>
+        <ul class="flex flex-col gap-y-2 items-end text-right text-gray-400 text-xs list-none">
+            {
+                headings
+                    .filter(({ depth }) => depth > 1)
+                    .map(({ slug, text }) => {
+                        return (
+                            <li>
+                                <NavLink class="hover:underline" href={`${href}#${slug}`} data-slug={slug}>
+                                    {text}
+                                </NavLink>
+                            </li>
+                        );
+                    })
+            }
+        </ul>
     </div>
 </BaseLayout>
 
@@ -123,5 +116,56 @@ const { Content, remarkPluginFrontmatter, headings } = await render(post);
                 button.innerText = label;
             }, 2500);
         }
+
+        const observerOptions = {
+            rootMargin: '-100px 0px -66%',
+            threshold: 0
+        };
+
+        const headingElements = document.querySelectorAll('h2, h3, h4, h5, h6');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        console.log(headingElements);
+
+        const intersectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                const slug = entry.target.id;
+                const correspondingNavLink = document.querySelector(`.nav-link[data-slug="${slug}"]`);
+                const isDarkMode = document.documentElement.classList.contains('dark');
+
+                if (entry.isIntersecting) {
+                    navLinks.forEach((link) => {
+                        link.classList.remove('text-gray-100');
+                        link.classList.remove('text-gray-900');
+                    });
+
+                    if (isDarkMode) {
+                        correspondingNavLink?.classList.add('text-gray-100');
+                    } else {
+                        correspondingNavLink?.classList.add('text-gray-900');
+                    }
+                }
+            });
+        }, observerOptions);
+
+        headingElements.forEach((heading) => {
+            intersectionObserver.observe(heading);
+        });
+
+        // Watch for theme changes using MutationObserver
+        const themeObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class') {
+                    const activeLink = document.querySelector('.nav-link.text-gray-100, .nav-link.text-gray-900');
+                    if (activeLink) {
+                        const isDarkMode = document.documentElement.classList.contains('dark');
+                        activeLink.classList.remove('text-gray-100', 'text-gray-900');
+                        activeLink.classList.add(isDarkMode ? 'text-gray-100' : 'text-gray-900');
+                    }
+                }
+            });
+        });
+
+        themeObserver.observe(document.documentElement, { attributes: true });
     });
 </script>

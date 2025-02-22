@@ -7,9 +7,9 @@ import Nav from '../components/Nav.astro';
 
 import { ThemeScript } from 'astro-theme-toggle';
 
-export type Props = HeadProps & { showHeader?: boolean; isCrunched?: boolean };
+export type Props = HeadProps & { showHeader?: boolean };
 
-const { showHeader = true, isCrunched = true, ...head } = Astro.props;
+const { showHeader = true, ...head } = Astro.props;
 ---
 
 <!doctype html>
@@ -26,11 +26,17 @@ const { showHeader = true, isCrunched = true, ...head } = Astro.props;
     </head>
     <body class="bg-main text-main">
         <div class="flex flex-col min-h-screen px-4 md:px-8">
-            <div class=`grow w-full max-w-4xl mx-auto ${isCrunched ? "" : 'px-0 sm:px-3'}`>
+            <div class=`grow w-full max-w-4xl mx-auto`>
                 <Nav />
             </div>
-            <main class={isCrunched ? 'grow w-full max-w-4xl mx-auto' : ''}>
-                <slot />
+            <main class="grid grid-cols-5">
+                <div class="hidden sm:block"></div>
+                <div class="col-span-5 col-start-1 sm:col-start-2 max-w-4xl justify-center sm:col-span-3">
+                    <slot />
+                </div>
+                <div class="hidden sm:block">
+                    <slot name="sidebar" />
+                </div>
             </main>
             <Footer />
         </div>

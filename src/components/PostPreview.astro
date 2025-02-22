@@ -2,11 +2,14 @@
 import { type CollectionEntry } from 'astro:content';
 import ArrowRight from '../icons/ArrowRight.astro';
 import FormattedDate from './FormattedDate.astro';
+import BlogReadingTime from './BlogReadingTime.astro';
 
 type Props = { post: CollectionEntry<'blog'>; class?: string; headingLevel?: 'h2' | 'h3' };
 
 const { post, class: className, headingLevel = 'h2' } = Astro.props;
 const { title, publishDate, updatedDate, excerpt } = post.data;
+const { metadata } = post.rendered || {};
+console.log({ metadata });
 const TitleTag = headingLevel;
 ---
 
@@ -17,7 +20,7 @@ const TitleTag = headingLevel;
         >
             {title}
         </TitleTag>
-        <div class="mt-1 text-sm leading-normal">
+        <div class="mt-1 text-sm leading-normal flex gap-x-3">
             <FormattedDate date={publishDate} />
             {
                 updatedDate && (
@@ -27,6 +30,11 @@ const TitleTag = headingLevel;
                             (Updated on <FormattedDate date={updatedDate} />)
                         </span>
                     </>
+                )
+            }
+            {
+                (metadata?.frontmatter as { minutesRead?: string })?.minutesRead && (
+                    <BlogReadingTime minutes={(metadata?.frontmatter as { minutesRead: string }).minutesRead || ''} />
                 )
             }
         </div>
